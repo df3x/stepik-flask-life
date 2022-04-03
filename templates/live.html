@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block menu %}
+{{super()}}
+{% endblock %}
+{% block app_content %}
+    <form action="{{ url_for('index') }}" method="post">
+        <input type="hidden" name="width" value="{{gen.width()}}" />
+        <input type="hidden" name="height" value="{{gen.height()}}"/>
+        <div class="line">
+            <p>
+                <input class="btn btn-warning home" type="submit" value="На главную">
+            </p>
+            <p>
+                <div class="counter">{{ gen.counter }}</div>
+            </p>
+            <p>  
+                <a class="btn btn-info refresh" href="{{ url_for('live') }}">Обновить</a>
+            </p>
+        </div>
+    </form>
+    <table class="world">
+        {% for i in range(gen.world|length) %}
+            <tr>
+                {% for j in range(gen.world[0]|length) %}
+                    {% if gen.world[i][j] %}
+                        <td class="cell living-cell"></td>
+                    {% elif not gen.world[i][j] and gen.old_world[i][j] %}
+                        <td class="cell dead-cell"></td>
+                    {% else %}
+                        <td class="cell"></td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor%}
+    </table>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>setInterval(()=>window.location.replace("{{ url_for('live') }}"), 1000)</script>
+{% endblock %}
